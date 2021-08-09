@@ -14,17 +14,19 @@ class IRC_client:
     def __init__(client):
         try:
             client.connect(SOCKET_LINK)
-            print("Connected to server")
+            logging.info("Established connection with server")
         except:
-            print("Problem to connect")
+            logging.error("Connection failed to the server")
 
     def Sending_data(client, data):
         client.send(data.encode("utf-8"))
+        logging.info("Sending datas")
         client.shutdown(socket.SOCK_STREAM)
+        logging.info("Closed connection")
 
     def message(user, msg):
         data = user.pseudo + "(" + user.nom + "_" + user.prenom + "_" + str(user.age) + ")" + ": " + msg
-        print(data)
+        logging.info(" : {%s}" ,data)
         return data
 
 def main(user, msg):
