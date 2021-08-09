@@ -8,7 +8,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-SOCKET_LINK = "/home/maxime/irc.socket"
+SOCKET_LINK = "~/irc.socket"
 
 class IRC_client:
     def __init__(client):
@@ -34,24 +34,19 @@ def main(user, msg):
     try:
         IRC_client.__init__(client)
     except ValueError:
-        print("Problem during connection to server")
+        logging.error("Problem during connection to server")
     message = IRC_client.message(user, msg)
     IRC_client.Sending_data(client, message)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--message", help="Message to send to IRC server")
-    parser.add_argument("-u", "--username", help="Username identification")
-    parser.add_argument("-ln", "--last-name", help="Last name of writer")
-    parser.add_argument("-fn", "--first-name", help="First name of writer")
-    parser.add_argument("-a", "--age", help="Age of writer", type=int)
-    args=parser.parse_args()
+    parser.add_argument("-m", "--message", help="The message will be sent to the server")
+    parser.add_argument("-u", "--username", help="Username to display")
+    parser.add_argument("-ln", "--last-name", help="Last name to display")
+    parser.add_argument("-fn", "--first-name", help="Name to display")
+    parser.add_argument("-a", "--age", help="Age to display", type=int)
+    args = parser.parse_args()
     msg = args.message
-
-    user = compte(
-                args.username, 
-                args.last_name,
-                args.first_name, 
-                args.age)
-
+    logging.info("Arguments: {%s}", args)
+    user = compte(args.username, args.last_name, args.first_name, args.age)
     main(user, msg)
