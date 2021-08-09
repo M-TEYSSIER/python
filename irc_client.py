@@ -6,19 +6,21 @@ import socket
 import argparse
 import logging
 
+logging.basicConfig(level=logging.DEBUG)
+
 SOCKET_LINK = "/home/maxime/irc.socket"
 
 class IRC_client:
     def __init__(client):
-        #TODO: Why problem pop during connection on IF condition
-        if client.connect(SOCKET_LINK):
+        try:
+            client.connect(SOCKET_LINK)
             print("Connected to server")
-        else:
+        except:
             print("Problem to connect")
-        
+
     def Sending_data(client, data):
         client.send(data.encode("utf-8"))
-        client.close()
+        client.shutdown(socket.SOCK_STREAM)
 
     def message(user, msg):
         data = user.pseudo + "(" + user.nom + "_" + user.prenom + "_" + str(user.age) + ")" + ": " + msg
