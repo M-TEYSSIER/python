@@ -8,7 +8,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-SOCKET_LINK = "~/irc.socket"
+SOCKET_LINK = "/home/maxime/irc.socket"
 
 class IRC_client:
     def __init__(client):
@@ -24,19 +24,30 @@ class IRC_client:
         client.shutdown(socket.SOCK_STREAM)
         logging.info("Closed connection")
 
-    def message(user, msg):
-        data = user.pseudo + "(" + user.nom + "_" + user.prenom + "_" + str(user.age) + ")" + ": " + msg
+    def create_data(args):
+        data = "["
+        if args.username is not None:
+            data += args.username + " "
+        if args.last_name is not None:
+            data += args.last_name + " "
+        if args.first_name is not None:
+            data += args.first_name + " "
+        if args.age is not None:
+            data += str(args.age) + " "
+        data = data.rstrip(data[-1]) + "]: "
+        if args.message is not None:
+            data += args.message
         logging.info(" : {%s}" ,data)
         return data
 
-def main(user, msg):
+def main(args):
     client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
         IRC_client.__init__(client)
     except ValueError:
         logging.error("Problem during connection to server")
-    message = IRC_client.message(user, msg)
-    IRC_client.Sending_data(client, message)
+    msg = IRC_client.create_data(args)
+    IRC_client.Sending_data(client, msg)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -46,7 +57,5 @@ if __name__ == "__main__":
     parser.add_argument("-fn", "--first-name", help="Name to display")
     parser.add_argument("-a", "--age", help="Age to display", type=int)
     args = parser.parse_args()
-    msg = args.message
     logging.info("Arguments: {%s}", args)
-    user = compte(args.username, args.last_name, args.first_name, args.age)
-    main(user, msg)
+    main(args)
