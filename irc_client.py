@@ -17,12 +17,13 @@ class IRC_client:
             logging.info("Established connection with server")
         except:
             logging.error("Connection failed to the server")
+    def __close__(client):
+        client.shutdown(socket.SOCK_STREAM)
+        logging.info("Closed connection")
 
     def Sending_data(client, data):
         client.send(data.encode("utf-8"))
         logging.info("Sending datas")
-        client.shutdown(socket.SOCK_STREAM)
-        logging.info("Closed connection")
 
     def create_data(args):
         data = "["
@@ -37,6 +38,8 @@ class IRC_client:
         data = data.rstrip(data[-1]) + "]: "
         if args.message is not None:
             data += args.message
+        elif args.message is None:
+            data += input(">") 
         logging.info(" : {%s}" ,data)
         return data
 
@@ -46,8 +49,12 @@ def main(args):
         IRC_client.__init__(client)
     except ValueError:
         logging.error("Problem during connection to server")
-    msg = IRC_client.create_data(args)
-    IRC_client.Sending_data(client, msg)
+    try:
+        msg = IRC_client.create_data(args)
+        IRC_client.Sending_data(client, msg)
+    except  KeyboardInterrupt:
+        pass
+    IRC_client.__close__(client)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -56,6 +63,7 @@ if __name__ == "__main__":
     parser.add_argument("-ln", "--last-name", help="Last name to display")
     parser.add_argument("-fn", "--first-name", help="Name to display")
     parser.add_argument("-a", "--age", help="Age to display", type=int)
+    parser.add_argument("-v", "--debug", help("Displays debug's information"))
     args = parser.parse_args()
     logging.info("Arguments: {%s}", args)
     main(args)
