@@ -7,7 +7,8 @@ import os
 import re
 import sqlite3
 
-# TODO: Eviter qu'un message soit supprimé à cause d'une similitude entre ban word et message
+# TODO: Eviter qu'un message soit supprimé à
+# cause d'une similitude entre ban word et message
 class MyClient(discord.Client):
     default_intents = discord.Intents.default()
     default_intents.members=True
@@ -87,11 +88,11 @@ class MyClient(discord.Client):
             self.del_bw(word)
 
         # Delete message with ban word on chat
-        if not any(word in message.content for word in self.cmd):
+        if not any(message.content.startswith(word) for word in self.cmd):
             liste = self.listing()
             if any(word in message.content.lower() for word in liste):
                 await message.delete()
-                await message.channel.send(f"```WARNING: {message.author}, using bad language```")
+                await message.channel.send(f"WARNING: {message.author.mention}, using bad language")
 
     def add_bw(self, word):
         try:
