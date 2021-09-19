@@ -1,0 +1,5 @@
+-- Run to create database : sqlite3 -init name.db name.sqlite3
+CREATE TABLE ban_words(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom text NOT NULL UNIQUE
+);
